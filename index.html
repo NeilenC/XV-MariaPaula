@@ -65,12 +65,27 @@
   /* ---------- Hero ---------- */
   .hero{padding:28px 20px 48px;gap:20px}
   .tag{display:inline-block;padding:6px 14px;border-radius:999px;background:var(--red);color:var(--cream);font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;transform:rotate(-3deg)}
-  .collage{position:relative;height:470px}
+  .collage{position:relative;height:490px}
   .xv{position:absolute;top:-18px;left:-12px;font-family:var(--display);font-size:250px;line-height:1;color:var(--red);letter-spacing:-.04em}
-  .blob{position:absolute;top:140px;left:50%;width:270px;height:300px;margin-left:-123px;border-radius:58% 42% 55% 45% / 46% 58% 42% 54%}
+  .blob{position:absolute;top:128px;left:50%;width:300px;height:340px;margin-left:-142px;border-radius:58% 42% 55% 45% / 46% 58% 42% 54%}
   .blob--back{background:var(--hot);transform:translate(12px,10px) rotate(6deg)}
   .blob--photo{background:var(--cream);border:3px solid var(--ink);overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--muted)}
-  .blob--photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .blob--photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 18%}
+
+  /* ---------- Fotos tipo cartas ---------- */
+  .stack{position:relative;width:100%;aspect-ratio:350/530;margin-top:8px}
+  .polaroid{position:absolute;width:62%;margin:0;padding:10px 10px 0;background:var(--cream);border:3px solid var(--ink);border-radius:18px;box-shadow:6px 6px 0 var(--ink);cursor:pointer;transition:transform .25s ease, z-index 0s .1s;-webkit-tap-highlight-color:transparent}
+  .polaroid img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;object-position:50% 20%;border-radius:10px;border:2px solid var(--ink);background:var(--pink)}
+  .polaroid figcaption{padding:10px 4px 12px;font-family:var(--display);font-size:20px;line-height:1.1;color:var(--red);text-align:center}
+  .polaroid--a{left:0;top:0;transform:rotate(-6deg);z-index:1}
+  .polaroid--a figcaption{text-align:left;padding-left:8px}
+  .polaroid--b{right:0;bottom:0;transform:rotate(5deg);z-index:2}
+  .polaroid.is-front{z-index:3}
+  .polaroid--a.is-front{transform:rotate(-3deg) scale(1.03)}
+  .polaroid--b.is-front{transform:rotate(2deg) scale(1.03)}
+  .stack .sticker{position:absolute;z-index:4;right:2%;top:2%;width:96px;height:96px;pointer-events:none}
+  .stack .sticker div{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;font-family:var(--display);font-size:15px;line-height:1;color:var(--ink);transform:rotate(12deg)}
+  .hint{font-size:13px;font-weight:600;text-align:center;opacity:.8}
   .blob--photo span{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
   .flower-hero{top:112px;right:-4px}
   .burst{position:absolute;bottom:-6px;left:-6px;width:132px;height:132px}
@@ -272,8 +287,32 @@
 
   <svg class="wave" viewBox="0 0 390 24" preserveAspectRatio="none" aria-hidden="true"><path d="M0 24 L0 12 Q16.25 0 32.5 12 T65 12 T97.5 12 T130 12 T162.5 12 T195 12 T227.5 12 T260 12 T292.5 12 T325 12 T357.5 12 T390 12 L390 24 Z" fill="#FFC1D8"/></svg>
 
+  <!-- ============ FOTOS ============ -->
+  <section style="padding-top:48px;padding-bottom:40px">
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <div class="eyebrow">Spoiler</div>
+      <h2 class="h2">Así llego<br>a mis 15</h2>
+    </div>
+
+    <div class="stack" id="stack">
+      <figure class="polaroid polaroid--a" tabindex="0" role="button" aria-label="Traer foto al frente: la torta">
+        <img src="foto-2.jpg" alt="María Paula probando la torta" loading="lazy">
+        <figcaption>¡Torta!</figcaption>
+      </figure>
+      <figure class="polaroid polaroid--b" tabindex="0" role="button" aria-label="Traer foto al frente: los globos">
+        <img src="foto-3.jpg" alt="María Paula riendo entre globos" loading="lazy">
+        <figcaption>¡A festejar!</figcaption>
+      </figure>
+      <div class="sticker spin" aria-hidden="true">
+        <svg width="96" height="96" viewBox="0 0 100 100"><use href="#burst" fill="#FF3D8B" stroke="#4A0012" stroke-width="2.5"/></svg>
+      </div>
+      <div class="sticker" aria-hidden="true"><div>XV!</div></div>
+    </div>
+    <p class="hint">Tocá una foto para traerla adelante</p>
+  </section>
+
   <!-- ============ 3. CUÁNDO Y DÓNDE ============ -->
-  <section style="padding-top:48px">
+  <section style="padding-top:24px">
     <div style="display:flex;flex-direction:column;gap:6px">
       <div class="eyebrow">02 — Cuándo y dónde</div>
       <h2 class="h2">Agendalo<br>ya mismo</h2>
@@ -568,6 +607,15 @@
     detalle.style.display = 'flex';
     sentBox.hidden = true;
     form.hidden = false;
+  });
+
+  // ====== Fotos tipo cartas: tocar trae al frente ======
+  document.querySelectorAll('.polaroid').forEach(card => {
+    const front = () => {
+      document.querySelectorAll('.polaroid').forEach(c => c.classList.toggle('is-front', c === card));
+    };
+    card.addEventListener('click', front);
+    card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); front(); } });
   });
 
   // ====== Regalos ======
